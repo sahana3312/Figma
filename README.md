@@ -1,5 +1,5 @@
 # Ex08 Event Registration Web Application
-## Date: 
+## Date: 20-03-2026
 
 ## AIM:
 To design, develop and deploy a web application for event registration using Figma UI tool.
@@ -35,107 +35,309 @@ Select the specific frame while generating code using Anima plugin.
 
 ## CODE:
 ```
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+home page
 
-df = pd.read_csv("C:/Users/acer/Downloads/weather-station-eee-block_2024_07_13.csv")
-df.columns = df.columns.str.strip()
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="image"><img class="figma" src="img/figma-1.png" /></div>
+  </body>
+</html>
 
-df['time'] = pd.to_datetime(df['time'])
-df = df.sort_values('time').reset_index(drop=True)
-
-cols_to_fill = ['tem', 'pm2_5', 'tsr', 'hum', 'pressure', 'wind_speed', 'illumination', 'co2']
-for col in cols_to_fill:
-    if col in df.columns:
-        df[col] = df[col].interpolate(method='linear', limit=10)
-
-df['hour'] = df['time'].dt.hour
-df['hour_sin'] = np.sin(2 * np.pi * df['hour'] / 24)
-df['hour_cos'] = np.cos(2 * np.pi * df['hour'] / 24)
-
-targets = ['tem', 'pm2_5', 'tsr']
-for t in targets:
-    df[f'{t}_lag1'] = df[t].shift(1)
-    df[f'{t}_lag2'] = df[t].shift(2)
-
-processed_df = df.dropna(subset=['tem_lag2', 'pm2_5_lag2', 'tsr_lag2', 'hum', 'pressure']).reset_index(drop=True)
-processed_df.to_csv("combined_processed_weather_data.csv", index=False)
-
-features = [
-    'hum', 'pressure', 'wind_speed', 'illumination', 'co2',
-    'hour_sin', 'hour_cos', 'tem_lag1', 'pm2_5_lag1', 'tsr_lag1'
-]
-print("--- Feature Engineering Summary ---")
-print(f"Original rows: {len(df)}")
-print(f"Processed rows (after lags/cleaning): {len(processed_df)}")
-print(f"Final high-performance feature set:",features)
-
-split_idx = int(len(processed_df) * 0.8)
-train, test = processed_df.iloc[:split_idx], processed_df.iloc[split_idx:]
-X_train, X_test = train[features], test[features]
-
-models = {}
-results = {}
-
-
-target_meta = {
-    'tem': ('Temperature', '°C', 'red'),
-    'pm2_5': ('Pollution (PM2.5)', 'µg/m³', 'green'),
-    'tsr': ('Energy (Solar Radiation)', 'W/m²', 'orange')
+.image {
+  width: 402px;
+  height: 879px;
 }
 
-for target in targets:
-    y_train, y_test = train[target], test[target]
-    
-    model = RandomForestRegressor(n_estimators=100, max_depth=12, random_state=42)
-    model.fit(X_train, y_train)
-    
-    preds = model.predict(X_test)
-    models[target] = model
-    
-    results[target] = {
-        'r2': r2_score(y_test, preds),
-        'mae': mean_absolute_error(y_test, preds),
-        'preds': preds,
-        'actual': y_test.values
-    }
+.image .figma {
+  position: fixed;
+  top: 1px;
+  left: 0;
+  width: 402px;
+  height: 874px;
+  aspect-ratio: 0.46;
+  object-fit: cover;
+}
 
 
-fig, axes = plt.subplots(3, 2, figsize=(16, 18))
+event page
 
-for i, target in enumerate(targets):
-    label, unit, color = target_meta[target]
-    res = results[target]
-    
-    axes[i, 0].plot(res['actual'][-150:], label='Actual', color='black', alpha=0.4, linewidth=2)
-    axes[i, 0].plot(res['preds'][-150:], label='Predicted', color=color, linestyle='--', linewidth=2)
-    axes[i, 0].set_title(f"{label}: Actual vs Predicted\n$R^2$: {res['r2']:.3f} | MAE: {res['mae']:.2f}")
-    axes[i, 0].set_ylabel(unit)
-    axes[i, 0].legend()
-    axes[i, 0].grid(True, alpha=0.3)
-    
-    importances = pd.Series(models[target].feature_importances_, index=features).sort_values()
-    importances.plot(kind='barh', ax=axes[i, 1], color=color, alpha=0.7)
-    axes[i, 1].set_title(f"Key Drivers: {label}")
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="image"><img class="figma" src="img/figma-2.png" /></div>
+  </body>
+</html>
 
-plt.tight_layout()
-plt.show()
+.image {
+  width: 391px;
+  height: 850px;
+}
 
-last_row = processed_df.iloc[-1]
-latest_data = pd.DataFrame([{
-    'hum': last_row['hum'], 'pressure': last_row['pressure'], 'wind_speed': last_row['wind_speed'],
-    'illumination': last_row['illumination'], 'co2': last_row['co2'],
-    'hour_sin': last_row['hour_sin'], 'hour_cos': last_row['hour_cos'],
-    'tem_lag1': last_row['tem'], 'pm2_5_lag1': last_row['pm2_5'], 'tsr_lag1': last_row['tsr']
-}])
+.image .figma {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 391px;
+  height: 850px;
+  aspect-ratio: 0.46;
+  object-fit: cover;
+}
 
-print("\n--- NEXT STEP PREDICTIONS (Using Latest Data) ---")
-for target in targets:
-    pred_val = models[target].predict(latest_data)[0]
-    print(f"Predicted {target_meta[target][0]}: {pred_val:.2f} {target_meta[target][1]}")
+register page
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="iphone">
+      <img class="figma" src="img/figma-3.png" />
+      <div class="text-wrapper">REGISTER FORM</div>
+      <div class="div">name:</div>
+      <div class="rectangle"></div>
+      <div class="text-wrapper-2">Age:</div>
+      <div class="rectangle-2"></div>
+      <div class="text-wrapper-3">register no:</div>
+      <div class="rectangle-3"></div>
+      <div class="text"></div>
+      <div class="text-wrapper-4">mobile no:</div>
+      <div class="rectangle-4"></div>
+      <div class="text-wrapper-5">Event name:</div>
+      <div class="rectangle-5"></div>
+      <img class="text-on-a-path" src="img/text-on-a-path.svg" />
+      <div class="rectangle-6"></div>
+      <div class="text-wrapper-6">Register</div>
+    </div>
+  </body>
+</html>
+
+
+.iphone {
+  background-color: #ffffff;
+  overflow: hidden;
+  width: 100%;
+  min-width: 402px;
+  min-height: 874px;
+  position: relative;
+}
+
+.iphone .figma {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 402px;
+  height: 874px;
+  aspect-ratio: 0.46;
+  object-fit: cover;
+}
+
+.iphone .text-wrapper {
+  top: 73px;
+  left: 42px;
+  font-family: "Inter-Regular", Helvetica;
+  color: #ffffff;
+  font-size: 40px;
+  white-space: nowrap;
+  position: absolute;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .div {
+  position: absolute;
+  top: 191px;
+  left: 14px;
+  font-family: "Inika-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .rectangle {
+  top: 198px;
+  left: 135px;
+  width: 238px;
+  height: 28px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text-wrapper-2 {
+  position: absolute;
+  top: 289px;
+  left: 21px;
+  font-family: "Inika-Regular", Helvetica;
+  font-weight: 400;
+  color: #191717;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .rectangle-2 {
+  top: 289px;
+  left: 123px;
+  width: 203px;
+  height: 32px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text-wrapper-3 {
+  top: 405px;
+  left: 3px;
+  font-family: "Inika-Regular", Helvetica;
+  color: #181616;
+  font-size: 32px;
+  position: absolute;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .rectangle-3 {
+  top: 405px;
+  left: 186px;
+  width: 197px;
+  height: 42px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text {
+  position: absolute;
+  top: 521px;
+  left: 25px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .text-wrapper-4 {
+  position: absolute;
+  top: 508px;
+  left: 11px;
+  font-family: "Inika-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .rectangle-4 {
+  top: 499px;
+  left: 187px;
+  width: 172px;
+  height: 51px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text-wrapper-5 {
+  position: absolute;
+  top: 611px;
+  left: 1px;
+  font-family: "Inika-Regular", Helvetica;
+  font-weight: 400;
+  color: #171515;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.iphone .rectangle-5 {
+  top: 602px;
+  left: 201px;
+  width: 172px;
+  height: 69px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text-on-a-path {
+  position: absolute;
+  top: 727px;
+  left: -1236px;
+  width: 205px;
+  height: 46px;
+}
+
+.iphone .rectangle-6 {
+  top: 753px;
+  left: 91px;
+  width: 235px;
+  height: 60px;
+  position: absolute;
+  background-color: #d9d9d9;
+}
+
+.iphone .text-wrapper-6 {
+  position: absolute;
+  top: 762px;
+  left: 139px;
+  font-family: "Inika-Regular", Helvetica;
+  font-weight: 400;
+  color: #ff1111;
+  font-size: 32px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+
+thankyou page
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="globals.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="image"><img class="figma" src="img/figma-4.png" /></div>
+  </body>
+</html>
+
+
+.image {
+  width: 396px;
+  height: 863px;
+}
+
+.image .figma {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 392px;
+  height: 863px;
+  aspect-ratio: 0.46;
+  object-fit: cover;
+}
+
 ```
 ## OUTPUT:
 
