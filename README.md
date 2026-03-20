@@ -341,7 +341,7 @@ thankyou page
 ```
 ## OUTPUT:
 
-<img width="543" height="137" alt="image" src="https://github.com/user-attachments/assets/b0623e92-1fcf-4842-a750-76fe9d8db016" />
+![alt text](image.png)
 
 ## RESULT:
 The program to design, develop and deploy a web application for event registration using Figma UI tool is completed successfully.
